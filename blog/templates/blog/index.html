@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    {% if is_logged_in %}
+        <h1>
+            Bem-vindo de volta!<br>
+            Olá, {{ usuario }}
+            {% if role == "admin" %}
+                <h3>
+                    Você é um admin
+                </h3>
+            {% elif role == "user" %}
+                <h3>
+                    Você é um user
+                </h3>
+            {% else %}
+                <h3>
+                    Você não é nada
+                </h3>
+            {% endif %}
+        </h1>
+        <h2>
+            Número: {{ numb }} e seu dobro {{ numb|add:numb }}
+        </h2>
+        <h2>
+            Data Atual: {{ now|date:"d/m/Y" }}
+        </h2>
+        {% if idade >= 18 %}
+            <h2>
+                Você é maior de idade.
+            </h2>
+        {% else %}
+            <h2>
+                Você é menor de idade.
+            </h2>
+        {% endif %}
+    {% else %}
+        <h1>
+            Faça login para continuar.
+        </h1>
+    {% endif %}
+
+    <h1>
+        Lista de Produtos
+    </h1>
+    <ul>
+        {% for produto in produtos %}
+            <li>Produto {{ forloop.counter }} : {{ produto.nome }} é {{ produto.preco }} RS</li>
+        {% endfor %}
+    </ul>
+
+    <a href="{% url 'contato' 83900000000 %}">Contato</a><br>
+    <a href="{% url 'homet' %}">Home Template</a><br>
+    <a href="{% url 'about' %}">About Template</a><br>
+</body>
+</html>
