@@ -36,6 +36,10 @@ urlpatterns = [
     path('publicacoes/novo/', views.PublicaCreateView.as_view(), name='publica_create'),
     path('publicacoes/<int:pk>/editar/', views.PublicaUpdateView.as_view(), name='publica_update'),
     path('publicacoes/<int:pk>/deletar/', views.PublicaDeleteView.as_view(), name='publica_delete'),
+
+    path('signup/', views.signup_view, name='signup'),
+    path('signin/', views.signin_view, name='signin'),
+    path('logout/', views.logout_view, name='logout'),
 ]
 
 # urlpatterns = [

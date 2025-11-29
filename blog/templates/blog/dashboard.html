@@ -3,6 +3,27 @@
 {% block title %}Dashboard - Sistema de Livros{% endblock %}
 
 {% block content %}
+{% if not user.is_authenticated %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">👋 Bem-vindo ao Sistema de Livros!</h1>
+    </div>
+    
+    <div style="text-align: center; padding: 2rem;">
+        <p style="font-size: 1.2rem; color: var(--light-text); margin-bottom: 2rem;">
+            Para acessar todas as funcionalidades do sistema, faça login ou crie uma conta.
+        </p>
+        <div class="action-buttons" style="justify-content: center;">
+            <a href="{% url 'signin' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                🔐 Fazer Login
+            </a>
+            <a href="{% url 'signup' %}" class="btn btn-success" style="font-size: 1.1rem; padding: 1rem 2rem;">
+                📝 Criar Conta
+            </a>
+        </div>
+    </div>
+</div>
+{% else %}
 <div class="card">
     <div class="card-header">
         <h1 class="card-title">📊 Dashboard</h1>
@@ -70,4 +91,5 @@
         <a href="{% url 'publica_list' %}" class="btn btn-primary">Ver Todas as Publicações</a>
     </div>
 </div>
+{% endif %}
 {% endblock %}

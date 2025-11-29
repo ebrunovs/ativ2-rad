@@ -87,6 +87,87 @@
             transform: translateY(-2px);
         }
 
+        /* User Menu */
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--light-bg);
+            border-radius: 20px;
+            font-weight: 500;
+            color: var(--dark-text);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            background: var(--secondary-color);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+
+        .logout-form {
+            margin: 0;
+        }
+
+        .btn-logout {
+            background: var(--danger-color);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-logout:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+
+        .btn-login, .btn-register {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-login {
+            background: var(--secondary-color);
+            color: var(--white);
+        }
+
+        .btn-login:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-register {
+            background: var(--success-color);
+            color: var(--white);
+        }
+
+        .btn-register:hover {
+            background: #229954;
+            transform: translateY(-2px);
+        }
+
         /* Main Container */
         .container {
             max-width: 1200px;
@@ -369,6 +450,12 @@
                 text-align: center;
             }
 
+            .user-menu {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
             .card-header {
                 flex-direction: column;
                 gap: 1rem;
@@ -449,6 +536,21 @@
                 <li><a href="{% url 'editora_list' %}">Editoras</a></li>
                 <li><a href="{% url 'publica_list' %}">Publicações</a></li>
             </ul>
+            <div class="user-menu">
+                {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <div class="user-avatar">{{ user.username.0|upper }}</div>
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <form method="post" action="{% url 'logout' %}" class="logout-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-logout">🚪 Sair</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'signin' %}" class="btn-login">🔐 Login</a>
+                    <a href="{% url 'signup' %}" class="btn-register">📝 Cadastrar</a>
+                {% endif %}
+            </div>
         </div>
     </nav>
 

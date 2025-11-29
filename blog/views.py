@@ -1,12 +1,16 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseNotAllowed, JsonResponse
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from datetime import date
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.utils.http import url_has_allowed_host_and_scheme
 
 from .models import Autor, Editora, Livro, Publica
-from .forms import AutorForm, EditoraForm, LivroForm, PublicaForm
+from .forms import AutorForm, EditoraForm, LivroForm, PublicaForm, SignInForm, SignUpForm
 
 # Create your views here.
 class ActivityTwo(View):
@@ -85,22 +89,25 @@ class AutorListView(ListView):
     context_object_name = 'autores'
     paginate_by = 10
 
-class AutorCreateView(CreateView):
+class AutorCreateView(LoginRequiredMixin, CreateView):
     model = Autor
     form_class = AutorForm
     template_name = 'blog/autor_form.html'
     success_url = reverse_lazy('autor_list')
+    login_url = '/blog/signin/'
 
-class AutorUpdateView(UpdateView):
+class AutorUpdateView(LoginRequiredMixin, UpdateView):
     model = Autor
     form_class = AutorForm
     template_name = 'blog/autor_form.html'
     success_url = reverse_lazy('autor_list')
+    login_url = '/blog/signin/'
 
-class AutorDeleteView(DeleteView):
+class AutorDeleteView(LoginRequiredMixin, DeleteView):
     model = Autor
     template_name = 'blog/autor_confirm_delete.html'
     success_url = reverse_lazy('autor_list')
+    login_url = '/blog/signin/'
 
 
 # ================== VIEWS CRUD PARA EDITORA ==================
@@ -110,22 +117,25 @@ class EditoraListView(ListView):
     context_object_name = 'editoras'
     paginate_by = 10
 
-class EditoraCreateView(CreateView):
+class EditoraCreateView(LoginRequiredMixin, CreateView):
     model = Editora
     form_class = EditoraForm
     template_name = 'blog/editora_form.html'
     success_url = reverse_lazy('editora_list')
+    login_url = '/blog/signin/'
 
-class EditoraUpdateView(UpdateView):
+class EditoraUpdateView(LoginRequiredMixin, UpdateView):
     model = Editora
     form_class = EditoraForm
     template_name = 'blog/editora_form.html'
     success_url = reverse_lazy('editora_list')
+    login_url = '/blog/signin/'
 
-class EditoraDeleteView(DeleteView):
+class EditoraDeleteView(LoginRequiredMixin, DeleteView):
     model = Editora
     template_name = 'blog/editora_confirm_delete.html'
     success_url = reverse_lazy('editora_list')
+    login_url = '/blog/signin/'
 
 
 # ================== VIEWS CRUD PARA LIVRO ==================
@@ -135,22 +145,25 @@ class LivroListView(ListView):
     context_object_name = 'livros'
     paginate_by = 10
 
-class LivroCreateView(CreateView):
+class LivroCreateView(LoginRequiredMixin, CreateView):
     model = Livro
     form_class = LivroForm
     template_name = 'blog/livro_form.html'
     success_url = reverse_lazy('livro_list')
+    login_url = '/blog/signin/'
 
-class LivroUpdateView(UpdateView):
+class LivroUpdateView(LoginRequiredMixin, UpdateView):
     model = Livro
     form_class = LivroForm
     template_name = 'blog/livro_form.html'
     success_url = reverse_lazy('livro_list')
+    login_url = '/blog/signin/'
 
-class LivroDeleteView(DeleteView):
+class LivroDeleteView(LoginRequiredMixin, DeleteView):
     model = Livro
     template_name = 'blog/livro_confirm_delete.html'
     success_url = reverse_lazy('livro_list')
+    login_url = '/blog/signin/'
 
 
 # ================== VIEWS CRUD PARA PUBLICA ==================
@@ -160,22 +173,25 @@ class PublicaListView(ListView):
     context_object_name = 'publicacoes'
     paginate_by = 10
 
-class PublicaCreateView(CreateView):
+class PublicaCreateView(LoginRequiredMixin, CreateView):
     model = Publica
     form_class = PublicaForm
     template_name = 'blog/publica_form.html'
     success_url = reverse_lazy('publica_list')
+    login_url = '/blog/signin/'
 
-class PublicaUpdateView(UpdateView):
+class PublicaUpdateView(LoginRequiredMixin, UpdateView):
     model = Publica
     form_class = PublicaForm
     template_name = 'blog/publica_form.html'
     success_url = reverse_lazy('publica_list')
+    login_url = '/blog/signin/'
 
-class PublicaDeleteView(DeleteView):
+class PublicaDeleteView(LoginRequiredMixin, DeleteView):
     model = Publica
     template_name = 'blog/publica_confirm_delete.html'
     success_url = reverse_lazy('publica_list')
+    login_url = '/blog/signin/'
 
 
 # ================== DASHBOARD PRINCIPAL ==================
@@ -188,3 +204,33 @@ def dashboard(request):
     }
     return render(request, 'blog/dashboard.html', context)
 
+def signup_view(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('dashboard')
+    else:
+        form = SignUpForm()
+    return render(request, 'blog/signup.html', {'form': form})
+
+def signin_view(request):
+    if request.method == 'POST':
+        form = SignInForm(request=request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            next_url = request.POST.get('next') or request.GET.get('next')
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+                return redirect(next_url)
+            return redirect('dashboard')
+    else:
+        form = SignInForm()
+    return render(request, 'blog/signin.html', {'form': form})
+
+def logout_view(request):
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+    logout(request)
+    return redirect('signin')

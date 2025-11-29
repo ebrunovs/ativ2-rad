@@ -1,0 +1,194 @@
+{% extends 'blog/base_livros.html' %}
+
+{% block title %}Cadastro - Sistema de Livros{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-header">
+            <h1 class="auth-title">📝 Cadastro</h1>
+            <p class="auth-subtitle">Crie sua conta gratuitamente</p>
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">
+                    <span class="label-icon">👤</span> Usuário
+                </label>
+                <input type="text" name="username" id="{{ form.username.id_for_label }}" 
+                       class="input-text" placeholder="Escolha um nome de usuário" 
+                       value="{{ form.username.value|default:'' }}" required>
+                {% if form.username.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.username.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <small class="form-help">Letras, números e @/./+/-/_ apenas</small>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">
+                    <span class="label-icon">📧</span> Email
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.email.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">
+                    <span class="label-icon">🔑</span> Senha
+                </label>
+                <input type="password" name="password1" id="{{ form.password1.id_for_label }}" 
+                       class="input-text" placeholder="Crie uma senha forte" required>
+                {% if form.password1.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.password1.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                <small class="form-help">Mínimo 8 caracteres, não apenas números</small>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">
+                    <span class="label-icon">🔒</span> Confirmar Senha
+                </label>
+                <input type="password" name="password2" id="{{ form.password2.id_for_label }}" 
+                       class="input-text" placeholder="Digite a senha novamente" required>
+                {% if form.password2.errors %}
+                    <ul class="errorlist">
+                        {% for error in form.password2.errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-success btn-block">
+                ✨ Criar Conta
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Já tem uma conta? <a href="{% url 'signin' %}" class="auth-link">Faça login aqui</a></p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .auth-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        padding: 2rem 1rem;
+    }
+
+    .auth-card {
+        background: var(--white);
+        border-radius: 16px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        padding: 3rem;
+        max-width: 500px;
+        width: 100%;
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .auth-title {
+        font-size: 2rem;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+    }
+
+    .auth-subtitle {
+        color: var(--light-text);
+        font-size: 1rem;
+    }
+
+    .auth-form .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .auth-form label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.5rem;
+        color: var(--dark-text);
+        font-weight: 500;
+    }
+
+    .label-icon {
+        font-size: 1.2rem;
+    }
+
+    .form-help {
+        display: block;
+        margin-top: 0.25rem;
+        color: var(--light-text);
+        font-size: 0.875rem;
+    }
+
+    .btn-block {
+        width: 100%;
+        padding: 1rem;
+        font-size: 1.1rem;
+        margin-top: 1rem;
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--light-bg);
+    }
+
+    .auth-footer p {
+        color: var(--light-text);
+        margin: 0;
+    }
+
+    .auth-link {
+        color: var(--secondary-color);
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.3s ease;
+    }
+
+    .auth-link:hover {
+        color: var(--primary-color);
+        text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+        .auth-card {
+            padding: 2rem 1.5rem;
+        }
+
+        .auth-title {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
