@@ -1,0 +1,39 @@
+{% extends 'blog/base_livros.html' %}
+
+{% block title %}{% if object %}Editar{% else %}Novo{% endif %} Autor{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">✍️ {% if object %}Editar Autor{% else %}Novo Autor{% endif %}</h1>
+        <a href="{% url 'autor_list' %}" class="btn btn-success">← Voltar</a>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.nome.id_for_label }}">Nome do Autor *</label>
+            {{ form.nome }}
+            {% if form.nome.errors %}
+                <ul class="errorlist">
+                    {% for error in form.nome.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="action-buttons">
+            <button type="submit" class="btn btn-success">💾 Salvar</button>
+            <a href="{% url 'autor_list' %}" class="btn btn-danger">❌ Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

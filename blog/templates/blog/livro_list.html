@@ -1,0 +1,73 @@
+{% extends 'blog/base_livros.html' %}
+
+{% block title %}Livros - Sistema de Livros{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">📖 Livros Cadastrados</h1>
+        <a href="{% url 'livro_create' %}" class="btn btn-primary">➕ Novo Livro</a>
+    </div>
+
+    {% if livros %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ISBN</th>
+                    <th>Título</th>
+                    <th>Publicação</th>
+                    <th>Preço</th>
+                    <th>Estoque</th>
+                    <th>Editora</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for livro in livros %}
+                <tr>
+                    <td><strong>{{ livro.ISBN }}</strong></td>
+                    <td>{{ livro.titulo }}</td>
+                    <td>{{ livro.publicacao|date:"d/m/Y" }}</td>
+                    <td>R$ {{ livro.preco }}</td>
+                    <td>{{ livro.estoque }}</td>
+                    <td>{{ livro.editora.nome }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'livro_update' livro.pk %}" class="btn btn-warning btn-sm">✏️ Editar</a>
+                            <a href="{% url 'livro_delete' livro.pk %}" class="btn btn-danger btn-sm">🗑️ Deletar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">« Primeira</a>
+            <a href="?page={{ page_obj.previous_page_number }}">‹ Anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Próxima ›</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Última »</a>
+        {% endif %}
+    </ul>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📚</div>
+        <p class="empty-state-text">Nenhum livro cadastrado ainda.</p>
+        <a href="{% url 'livro_create' %}" class="btn btn-primary">Cadastrar Primeiro Livro</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

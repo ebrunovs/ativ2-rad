@@ -1,0 +1,51 @@
+{% extends 'blog/base_livros.html' %}
+
+{% block title %}{% if object %}Editar{% else %}Nova{% endif %} Publicação{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">📝 {% if object %}Editar Publicação{% else %}Nova Publicação{% endif %}</h1>
+        <a href="{% url 'publica_list' %}" class="btn btn-primary">← Voltar</a>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-group">
+            <label for="{{ form.livro.id_for_label }}">Livro *</label>
+            {{ form.livro }}
+            {% if form.livro.errors %}
+                <ul class="errorlist">
+                    {% for error in form.livro.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            <label for="{{ form.autor.id_for_label }}">Autor *</label>
+            {{ form.autor }}
+            {% if form.autor.errors %}
+                <ul class="errorlist">
+                    {% for error in form.autor.errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <div class="action-buttons">
+            <button type="submit" class="btn btn-success">💾 Salvar</button>
+            <a href="{% url 'publica_list' %}" class="btn btn-danger">❌ Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

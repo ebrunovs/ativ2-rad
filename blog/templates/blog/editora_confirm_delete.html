@@ -1,0 +1,33 @@
+{% extends 'blog/base_livros.html' %}
+
+{% block title %}Confirmar Exclusão de Editora{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">🗑️ Confirmar Exclusão</h1>
+    </div>
+
+    <div class="alert alert-danger">
+        <strong>⚠️ Atenção!</strong> Esta ação não pode ser desfeita.
+    </div>
+
+    <div style="padding: 1rem; background: #f8f9fa; border-radius: 8px; margin-bottom: 1.5rem;">
+        <h3 style="color: var(--primary-color); margin-bottom: 1rem;">Detalhes da Editora</h3>
+        <p><strong>ID:</strong> {{ object.id }}</p>
+        <p><strong>Nome:</strong> {{ object.nome }}</p>
+    </div>
+
+    <p style="margin-bottom: 1.5rem; color: var(--dark-text); font-size: 1.1rem;">
+        Tem certeza que deseja excluir a editora <strong>"{{ object.nome }}"</strong>?
+    </p>
+
+    <form method="post">
+        {% csrf_token %}
+        <div class="action-buttons">
+            <button type="submit" class="btn btn-danger">🗑️ Sim, Excluir</button>
+            <a href="{% url 'editora_list' %}" class="btn btn-warning">❌ Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

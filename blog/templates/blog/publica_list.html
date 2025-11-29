@@ -1,0 +1,67 @@
+{% extends 'blog/base_livros.html' %}
+
+{% block title %}Publicações - Sistema de Livros{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">📝 Publicações Registradas</h1>
+        <a href="{% url 'publica_create' %}" class="btn btn-primary">➕ Nova Publicação</a>
+    </div>
+
+    {% if publicacoes %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Livro</th>
+                    <th>Autor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for publica in publicacoes %}
+                <tr>
+                    <td><strong>{{ publica.id }}</strong></td>
+                    <td>{{ publica.livro.titulo }}</td>
+                    <td>{{ publica.autor.nome }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'publica_update' publica.pk %}" class="btn btn-warning btn-sm">✏️ Editar</a>
+                            <a href="{% url 'publica_delete' publica.pk %}" class="btn btn-danger btn-sm">🗑️ Deletar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">« Primeira</a>
+            <a href="?page={{ page_obj.previous_page_number }}">‹ Anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Próxima ›</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Última »</a>
+        {% endif %}
+    </ul>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">📝</div>
+        <p class="empty-state-text">Nenhuma publicação registrada ainda.</p>
+        <a href="{% url 'publica_create' %}" class="btn btn-primary">Registrar Primeira Publicação</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

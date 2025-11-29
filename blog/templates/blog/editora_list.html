@@ -1,0 +1,65 @@
+{% extends 'blog/base_livros.html' %}
+
+{% block title %}Editoras - Sistema de Livros{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h1 class="card-title">🏢 Editoras Cadastradas</h1>
+        <a href="{% url 'editora_create' %}" class="btn btn-warning">➕ Nova Editora</a>
+    </div>
+
+    {% if editoras %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for editora in editoras %}
+                <tr>
+                    <td><strong>{{ editora.id }}</strong></td>
+                    <td>{{ editora.nome }}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <a href="{% url 'editora_update' editora.pk %}" class="btn btn-warning btn-sm">✏️ Editar</a>
+                            <a href="{% url 'editora_delete' editora.pk %}" class="btn btn-danger btn-sm">🗑️ Deletar</a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% if is_paginated %}
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">« Primeira</a>
+            <a href="?page={{ page_obj.previous_page_number }}">‹ Anterior</a>
+        {% endif %}
+
+        <span class="current">
+            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Próxima ›</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Última »</a>
+        {% endif %}
+    </ul>
+    {% endif %}
+
+    {% else %}
+    <div class="empty-state">
+        <div class="empty-state-icon">🏢</div>
+        <p class="empty-state-text">Nenhuma editora cadastrada ainda.</p>
+        <a href="{% url 'editora_create' %}" class="btn btn-warning">Cadastrar Primeira Editora</a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
